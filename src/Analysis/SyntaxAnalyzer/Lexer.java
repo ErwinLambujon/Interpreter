@@ -1,12 +1,8 @@
 package Analysis.SyntaxAnalyzer;
 
-
-
 import Analysis.TokenDataTypes.TokenType;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
 
 public class Lexer {
     private final String code;
@@ -46,7 +42,7 @@ public class Lexer {
         next(1);   // Moves the position forward by 1
     }
 
-    public Token getToken() {
+    public Token getToken() throws Exception {
         // Main method to get the next token from the source code
         while (position < code.length()) {
             // Handles different types of tokens based on the current character
@@ -62,7 +58,7 @@ public class Lexer {
                     next(1);
                     continue;
                 case '\n':
-                    Token newLineToken = new Token(TokenType.NEWLINE, "\n", null, line, column);
+                    Token newLineToken = new Token(TokenType.NEWLINE, "\n", null);
                     newLine();
                     return newLineToken;
                 case '_':
@@ -79,73 +75,72 @@ public class Lexer {
                     continue;
                 case '*':
                     next(1);
-                    return new Token(TokenType.STAR, "*", null, line, column - 1);
+                    return new Token(TokenType.STAR, "*", null);
                 case '/':
                     next(1);
-                    return new Token(TokenType.SLASH, "/", null, line, column - 1);
+                    return new Token(TokenType.SLASH, "/", null);
                 case '%':
                     next(1);
-                    return new Token(TokenType.MODULO, "%", null, line, column - 1);
+                    return new Token(TokenType.MODULO, "%", null);
                 case '+':
                     next(1);
-                    return new Token(TokenType.PLUS, "+", null, line, column - 1);
+                    return new Token(TokenType.PLUS, "+", null);
                 case '-':
                     next(1);
-                    return new Token(TokenType.MINUS, "-", null, line, column - 1);
+                    return new Token(TokenType.MINUS, "-", null);
                 case '>':
                     if (lookAhead() == '=') {
                         next(2);
-                        return new Token(TokenType.GREATEREQUAL, ">=", null, line, column - 2);
+                        return new Token(TokenType.GREATEREQUAL, ">=", null);
                     }
                     next(1);
-                    return new Token(TokenType.GREATERTHAN, ">", null, line, column - 1);
+                    return new Token(TokenType.GREATERTHAN, ">", null);
                 case '<':
                     if (lookAhead() == '=') {
                         next(2);
-                        return new Token(TokenType.LESSEQUAL, "<=", null, line, column - 2);
+                        return new Token(TokenType.LESSEQUAL, "<=", null);
                     } else if (lookAhead() == '>') {
                         next(2);
-                        return new Token(TokenType.NOTEQUAL, "<>", null, line, column - 2);
+                        return new Token(TokenType.NOTEQUAL, "<>", null);
                     }
                     next(1);
-                    return new Token(TokenType.LESSTHAN, "<", null, line, column - 1);
+                    return new Token(TokenType.LESSTHAN, "<", null);
                 case '=':
                     if (lookAhead() == '=') {
                         next(2);
-                        return new Token(TokenType.EQUALTO, "==", null, line, column - 2);
+                        return new Token(TokenType.EQUALTO, "==", null);
                     }
                     next(1);
-                    return new Token(TokenType.EQUAL, "=", null, line, column - 1);
+                    return new Token(TokenType.EQUAL, "=", null);
                 case '$':
                     next(1);
-                    return new Token(TokenType.DOLLAR, "$", null, line, column - 1);
+                    return new Token(TokenType.DOLLAR, "$", null);
                 case '&':
                     next(1);
-                    return new Token(TokenType.AMPERSAND, "&", null, line, column - 1);
+                    return new Token(TokenType.AMPERSAND, "&", null);
                 case '[':
                     return getEscapeCodeToken();
                 case '(':
                     next(1);
-                    return new Token(TokenType.OPENPARENTHESIS, "(", null, line, column - 1);
+                    return new Token(TokenType.OPENPARENTHESIS, "(", null);
                 case ')':
                     next(1);
-                    return new Token(TokenType.CLOSEPARENTHESIS, ")", null, line, column - 1);
+                    return new Token(TokenType.CLOSEPARENTHESIS, ")", null);
                 case ',':
                     next(1);
-                    return new Token(TokenType.COMMA, ",", null, line, column - 1);
+                    return new Token(TokenType.COMMA, ",", null);
                 case ':':
                     next(1);
-                    return new Token(TokenType.COLON, ":", null, line, column - 1);
+                    return new Token(TokenType.COLON, ":", null);
                 default:
                     next(1);
-                    return new Token(TokenType.ERROR, Character.toString(current()), "Unknown symbol", line, column - 1);
+                    return new Token(TokenType.ERROR, Character.toString(current()), "Unknown symbol");
             }
         }
-        return new Token(TokenType.ENDOFFILE, "\0", null, line, column);
+        return new Token(TokenType.ENDOFFILE, "\0", null);
     }
-
     
-    private Token getKeywordOrDataTypeOrIdentifierToken() {
+    private Token getKeywordOrDataTypeOrIdentifierToken() throws Exception {
         // Handles identifiers, keywords, and data types
         int start = position;
         int lineCol = column;
@@ -156,7 +151,7 @@ public class Lexer {
         int length = position - start;
         String text = code.substring(start, start + length);
     
-        return Grammar.getWordToken(text, line, lineCol);
+        return Grammar.getWordToken(text);
     }
     
     private Token getCharacterLiteralToken() {
@@ -179,9 +174,9 @@ public class Lexer {
         Matcher matcher = charRegex.matcher(text);
         if (matcher.matches()) {
             value = text.charAt(text.length() / 2);
-            return new Token(TokenType.CHARLITERAL, text, value, line, lineCol);
+            return new Token(TokenType.CHARLITERAL, text, value);
         }
-        return new Token(TokenType.ERROR, text, "Invalid CHAR literal.", line, lineCol);
+        return new Token(TokenType.ERROR, text, "Invalid CHAR literal.");
     }
     private Token getBooleanOrStringLiteralToken() {
         // Handles boolean and string literals
@@ -205,12 +200,12 @@ public class Lexer {
         Matcher stringMatcher = stringRegex.matcher(text);
     
         if (boolMatcher.matches())
-            return new Token(TokenType.BOOLLITERAL, text, text.equals("\"TRUE\""), line, lineCol);
+            return new Token(TokenType.BOOLLITERAL, text, text.equals("\"TRUE\""));
         else if (stringMatcher.matches())
-            return new Token(TokenType.STRINGLITERAL, text, text.substring(1, text.length() - 1), line, lineCol);
+            return new Token(TokenType.STRINGLITERAL, text, text.substring(1, text.length() - 1));
         else {
             String errorMessage = text.contains("TRUE") || text.contains("FALSE") ? "Invalid BOOL literal" : "Invalid STRING literal";
-            return new Token(TokenType.ERROR, text, errorMessage, line, lineCol);
+            return new Token(TokenType.ERROR, text, errorMessage);
         }
     }
       
@@ -239,12 +234,12 @@ public class Lexer {
     
         if (intMatcher.matches()) {
             val = Integer.parseInt(text);
-            return new Token(TokenType.INTLITERAL, text, val, line, lineCol);
+            return new Token(TokenType.INTLITERAL, text, val);
         } else if (floatMatcher.matches()) {
             val = Float.parseFloat(text);
-            return new Token(TokenType.FLOATLITERAL, text, val, line, lineCol);
+            return new Token(TokenType.FLOATLITERAL, text, val);
         }
-        return new Token(TokenType.ERROR, text, "Invalid Number.", line, lineCol);
+        return new Token(TokenType.ERROR, text, "Invalid Number.");
     }
     private Token getEscapeCodeToken() {
         // Handles escape codes
@@ -265,10 +260,8 @@ public class Lexer {
         Matcher matcher = escapeRegex.matcher(text);
         if (matcher.matches()) {
             val = text.charAt(1);
-            return new Token(TokenType.ESCAPE, text, val, line, lineCol);
+            return new Token(TokenType.ESCAPE, text, val);
         }
-        return new Token(TokenType.ERROR, text, "Invalid '" + text + "' as escape sequence.", line, lineCol);
+        return new Token(TokenType.ERROR, text, "Invalid '" + text + "' as escape sequence.");
     }
-    
-    
 }

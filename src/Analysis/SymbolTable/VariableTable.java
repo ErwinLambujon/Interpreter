@@ -8,6 +8,10 @@ import java.util.Map;
 
 
 public class VariableTable {
+    /*
+        Object ang gigamit diri so that we can do pass
+        by reference or referencinga value. Example is a = b
+     */
     private Map<String, Map.Entry<DataType, Object>> variableTable;
 
     public VariableTable() {

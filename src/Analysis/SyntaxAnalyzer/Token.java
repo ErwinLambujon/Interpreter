@@ -9,12 +9,14 @@ public class Token {
     private int line;
     private int column;
 
-    public Token(TokenType tokenType, String code, Object value, int line, int column) {
+    public Token(TokenType tokenType, String code, Object value) {
         this.tokenType = tokenType;
         this.code = code;
         this.value = value;
-        this.line = line;
-        this.column = column;
+    }
+
+    public Token(TokenType tokenType) {
+        this.tokenType = tokenType;
     }
 
     public TokenType getTokenType() {

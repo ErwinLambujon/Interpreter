@@ -16,7 +16,7 @@ public class Parser {
     private final List<String> variableNames;
     private boolean canDeclare;
 
-    public Parser(Lexer lexer) {
+    public Parser(Lexer lexer) throws Exception {
         this.lexer = lexer;
         this.currentToken = lexer.getToken();
         this.variableNames = new ArrayList<>();
@@ -79,7 +79,7 @@ public class Parser {
                     statementList.add(parseVariableDeclarationStatement());
                 } else {
                     // Throw an exception if variable declaration is not allowed here based on current token's line and column
-                    throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Invalid syntax.");
+                    throw new Exception("Invalid syntax.");
                 }
             } else if (matchToken(TokenType.IDENTIFIER)) {
                 // Set canDeclare to false (since identifiers are typically used in assignments)
@@ -108,10 +108,10 @@ public class Parser {
                 statementList.add(parseWhileStatement());
             } else if (matchToken(TokenType.ENDOFFILE)) {
                 // Throw an exception if the end of file is reached but a missing "End" statement is detected (based on current token's line and column)
-                throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Missing End Statement.");
+                throw new Exception("Program should end with 'END CODE' line.");
             } else {
                 // If none of the expected tokens matched, throw an exception with the current token's information (line, column, and code)
-                throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Invalid syntax \"" + currentToken.getCode() + "\".");
+                throw new Exception("Invalid syntax \"" + currentToken.getCode() + "\".");
             }
 
             // Keep consuming newline tokens (ignoring empty lines) after a statement is parsed
@@ -155,32 +155,6 @@ public class Parser {
             return null; // Or throw new RuntimeException("Error parsing variable declaration", e);
         }
     }
-    // private StatementNode parseVariableDeclarationStatement() {
-    //     // Get the data type token and consume it
-    //     Token dataTypeToken = currentToken;
-    //     consumeToken(dataTypeToken.getTokenType());
-    
-    //     // Map to store variables with their expressions
-    //     Map<String, ExpressionNode> variables = new HashMap<>();
-    
-    //     // Get the first variable name and expression
-    //     Map.Entry<String, ExpressionNode> variable = getVariable();
-    //     variables.put(variable.getKey(), variable.getValue());  // Use getKey() and getValue()
-    //     variableNames.add(variable.getKey());
-    
-    //     // Process remaining variables separated by commas
-    //     while (matchToken(TokenType.COMMA)) {
-    //         consumeToken(TokenType.COMMA);
-    //         variable = getVariable();
-    //         variables.put(variable.getKey(), variable.getValue());  // Use getKey() and getValue()
-    //         variableNames.add(variable.getKey());
-    //     }
-    
-    //     // Create and return the VariableDeclarationNode
-    //     return new VariableDeclarationNode(dataTypeToken, variables);
-    // }
-    
-    
 
     private StatementNode parseAssignmentStatement() throws Exception {
         List<String> identifiers = new ArrayList<>();
@@ -210,59 +184,6 @@ public class Parser {
         return new AssignmentNode(identifiers, equals, expressionValue);
     }
 
-//    private StatementNode parseDisplayStatement() throws Exception {
-//        Token displayToken = currentToken;
-//        consumeToken(TokenType.DISPLAY);
-//        consumeToken(TokenType.COLON);
-//
-//        List<ExpressionNode> expressions = new ArrayList<>();
-//
-//        if (matchToken(TokenType.DOLLAR)) {
-//            expressions.add(new LiteralNode(currentToken, "\n"));
-//            consumeToken(TokenType.DOLLAR);
-//
-//            while (matchToken(TokenType.AMPERSAND)) {
-//                consumeToken(TokenType.AMPERSAND);
-//
-//                if (matchToken(TokenType.NEWLINE))
-//                    throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected expression token");
-//
-//                if (matchToken(TokenType.DOLLAR)) {
-//                    expressions.add(new LiteralNode(currentToken, "\n"));
-//                    consumeToken(TokenType.DOLLAR);
-//                } else
-//                    expressions.add(parseExpression());
-//            }
-//
-//            if (!matchToken(TokenType.NEWLINE))
-//                throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected " + TokenType.NEWLINE + " token");
-//
-//            return new DisplayNode(displayToken, expressions);
-//        } else if (matchToken(TokenType.ESCAPE) || matchToken(TokenType.IDENTIFIER) || matchToken(TokenType.INTLITERAL) || matchToken(TokenType.FLOATLITERAL)
-//                || matchToken(TokenType.CHARLITERAL) || matchToken(TokenType.BOOLLITERAL) || matchToken(TokenType.STRINGLITERAL)
-//                || matchToken(TokenType.MINUS) || matchToken(TokenType.PLUS) || matchToken(TokenType.NOT)) {
-//            expressions.add(parseExpression());
-//
-//            while (matchToken(TokenType.AMPERSAND)) {
-//                consumeToken(TokenType.AMPERSAND);
-//
-//                if (matchToken(TokenType.NEWLINE))
-//                    throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected expression token");
-//
-//                if (matchToken(TokenType.DOLLAR)) {
-//                    expressions.add(new LiteralNode(currentToken, "\n"));
-//                    consumeToken(TokenType.DOLLAR);
-//                } else
-//                    expressions.add(parseExpression());
-//            }
-//
-//            if (!matchToken(TokenType.NEWLINE))
-//                throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected " + TokenType.NEWLINE + " token");
-//
-//            return new DisplayNode(displayToken, expressions);
-//        } else
-//            throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected expression token");
-//    }
 private StatementNode parseDisplayStatement() throws Exception {
     // Read and remove the current token
     Token displayToken = currentToken;
@@ -284,7 +205,7 @@ private StatementNode parseDisplayStatement() throws Exception {
 
             // If newline is next to & throw an error
             if (matchToken(TokenType.NEWLINE))
-                throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected expression token");
+                throw new Exception("Unexpected Token Type: " + currentToken.getTokenType());
 
             // If $ is next to &, create a new Literal Expression with
             // the value \n
@@ -299,7 +220,7 @@ private StatementNode parseDisplayStatement() throws Exception {
 
         // If the token is not newline then throw an error
         if (!matchToken(TokenType.NEWLINE))
-            throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected " + TokenType.NEWLINE + " token");
+            throw new Exception("Unexpected Token Type: " + currentToken.getTokenType() + " Expected Token: " + TokenType.NEWLINE);
 
         // Create the Display Statement
         return new DisplayNode(displayToken, expressions);
@@ -317,7 +238,7 @@ private StatementNode parseDisplayStatement() throws Exception {
 
             // If newline is next to & throw an error
             if (matchToken(TokenType.NEWLINE))
-                throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected expression token");
+                throw new Exception("Unexpected Token Type: " + currentToken.getTokenType());
 
             // If $ is next to &, create a new Literal Expression with
             // the value \n
@@ -332,7 +253,7 @@ private StatementNode parseDisplayStatement() throws Exception {
 
         // If the token is not newline then throw an error
         if (!matchToken(TokenType.NEWLINE))
-            throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected " + TokenType.NEWLINE + " token");
+            throw new Exception("Unexpected Token Type: " + currentToken.getTokenType() + " Expected Token: " + TokenType.NEWLINE);
 
         // Create the Display Statement
         return new DisplayNode(displayToken, expressions);
@@ -340,7 +261,7 @@ private StatementNode parseDisplayStatement() throws Exception {
     // If display starts with '&'
     // ex. DISPLAY: & ....
     else
-        throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected expression token");
+        throw new Exception("Unexpected Token: " + currentToken.getTokenType());
 }
 
 
@@ -375,7 +296,7 @@ private StatementNode parseDisplayStatement() throws Exception {
 
         while (matchToken(TokenType.ELSE)) {
             if (isElse)
-                throw new Exception("(" + currentToken.getLine() + ", " + currentToken.getColumn() + "): Invalid syntax " + currentToken.getTokenType());
+                throw new Exception("Invalid syntax: " + currentToken.getTokenType());
 
             tokens.add(currentToken);
             consumeToken(TokenType.ELSE);
@@ -422,7 +343,7 @@ private StatementNode parseDisplayStatement() throws Exception {
             expression = parseBinaryExpression(null);
             return expression;
         } else
-            throw new Exception("(" + currentToken.getLine() + ", " + currentToken.getColumn() + "): Unexpected " + currentToken.getTokenType() + " token expected expression token.");
+            throw new Exception("Unexpected Token Type: " + currentToken.getTokenType());
     }
 
     private ExpressionNode parseParenthesisExpression() throws Exception {
@@ -524,10 +445,10 @@ private StatementNode parseDisplayStatement() throws Exception {
                     currentToken.setTokenType(TokenType.IDENTIFIER);
                     currentToken.setValue(null);
                 } else
-                    throw new Exception("(" + currentToken.getLine() + ", " + currentToken.getColumn() + "): " + currentToken.getValue());
+                    throw new Exception("" +currentToken.getValue() + "");
             }
         } else
-            throw new Exception("(" + currentToken.getLine() + "," + currentToken.getColumn() + "): Unexpected token " + currentToken.getTokenType() + " token expected " + tokenType + " token");
+            throw new Exception("Unexpected Token Type: " + currentToken.getTokenType() + " Expected Token: " + tokenType);
     }
 
     private boolean matchToken(TokenType tokenType) {
@@ -562,24 +483,5 @@ private StatementNode parseDisplayStatement() throws Exception {
             return second;
         }
     }
-    
-
-
-    // private Pair<String, ExpressionNode> getVariable() {
-    //     // Read and consume the identifier token
-    //     Token identifier = _currentToken;
-    //     consumeToken(TokenType.IDENTIFIER);
-    
-    //     // Check for optional assignment
-    //     if (matchToken(TokenType.EQUAL)) {
-    //         consumeToken(TokenType.EQUAL);
-    //         // Parse the expression after the equal sign
-    //         ExpressionNode expression = parseExpression();
-    //         return new Pair<>(identifier.getCode(), expression);
-    //     }
-    
-    //     // No assignment, return identifier and null for expression
-    //     return new Pair<>(identifier.getCode(), null);
-    // }
     
 }

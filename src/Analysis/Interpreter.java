@@ -200,13 +200,9 @@ public class Interpreter {
                 binResult = (int) left != (int) right;
                 return binResult;
             case AND:
-                left = Boolean.parseBoolean((String) left);
-                right = Boolean.parseBoolean((String) right);
                 binResult = (boolean) left && (boolean) right;
                 return binResult;
             case OR:
-                left = Boolean.parseBoolean((String) left);
-                right = Boolean.parseBoolean((String) right);
                 binResult = (boolean) left || (boolean) right;
                 return binResult;
             default:

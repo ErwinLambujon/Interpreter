@@ -14,21 +14,12 @@ public class App {
             System.out.println(code);
 
             // Execute the interpreter
-          
-        
+
             Interpreter program = new Interpreter(code);
             program.execute(null);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
-
-        System.out.println("\nPress any key to continue...");
-        try {
-            System.in.read();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }

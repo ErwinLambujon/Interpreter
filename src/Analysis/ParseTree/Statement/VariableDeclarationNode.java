@@ -17,15 +17,17 @@ public class VariableDeclarationNode extends StatementNode {
      */
     private final Map<String, ExpressionNode> variables;
 
+
     public VariableDeclarationNode(Token TokenType, Map<String, ExpressionNode> variables) {
         this.TokenType = TokenType;
         this.variables = variables;
     }
-
+    //Returns the TokenType, which represents the data type of the variables.
     public Token getDataTypeToken() {
         return TokenType;
     }
 
+    //Returns the variables map, which contains the variable names and their initialization values.
     public Map<String, ExpressionNode> getVariables() {
         return variables;
     }
