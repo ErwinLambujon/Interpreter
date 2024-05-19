@@ -200,15 +200,23 @@ public class Interpreter {
                 binResult = (int) left != (int) right;
                 return binResult;
             case AND:
-                left = Boolean.parseBoolean((String) left);
-                right = Boolean.parseBoolean((String) right);
+                if(left instanceof String){
+                    left = Boolean.parseBoolean((String) left);
+                }
+                if(right instanceof String){
+                    right = Boolean.parseBoolean((String) right);
+                }
                 binResult = (boolean) left && (boolean) right;
-                return binResult;
+                return ((boolean) binResult) ? "TRUE" : "FALSE";
             case OR:
-                left = Boolean.parseBoolean((String) left);
-                right = Boolean.parseBoolean((String) right);
+                if(left instanceof String){
+                    left = Boolean.parseBoolean((String) left);
+                }
+                if(right instanceof String){
+                    right = Boolean.parseBoolean((String) right);
+                }
                 binResult = (boolean) left || (boolean) right;
-                return binResult;
+                return ((boolean) binResult) ? "TRUE" : "FALSE";
             default:
                 throw new RuntimeException("Unknown operator.");
         }
