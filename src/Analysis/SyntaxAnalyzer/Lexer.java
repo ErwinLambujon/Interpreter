@@ -7,13 +7,10 @@ import java.util.regex.Pattern;
 public class Lexer {
     private final String code;
     private int position; // Current position in the source code
-    private int line, column; // Current line and column in the source code
 
     public Lexer(String code) {
         this.code = code;
         this.position = 0;
-        this.line = 1;
-        this.column = 1;
     }
 
     private char current() {
@@ -33,12 +30,9 @@ public class Lexer {
 
     private void next(int offset) {
         position += offset;
-        column += offset; // Moves the position and column forward by the given offset
     }
 
     private void newLine() {
-        line++;        // Moves to the next line and resets the column
-        column = 1;
         next(1);   // Moves the position forward by 1
     }
 
@@ -143,8 +137,7 @@ public class Lexer {
     private Token getKeywordOrDataTypeOrIdentifierToken() throws Exception {
         // Handles identifiers, keywords, and data types
         int start = position;
-        int lineCol = column;
-    
+
         while (Character.isLetter(current()) || current() == '_' || Character.isDigit(current()))
             next(1);
     
@@ -157,8 +150,7 @@ public class Lexer {
     private Token getCharacterLiteralToken() {
         // Handles character literals
         int start = position;
-        int lineCol = column;
-    
+
         next(1);
         while (current() != '\'' && !Character.isWhitespace(lookAhead()))
             next(1);
@@ -181,8 +173,7 @@ public class Lexer {
     private Token getBooleanOrStringLiteralToken() {
         // Handles boolean and string literals
         int start = position;
-        int lineCol = column;
-    
+
         next(1);
         while (current() != '\"' && !Character.isWhitespace(lookAhead()))
             next(1);
@@ -214,8 +205,7 @@ public class Lexer {
         boolean isFloat = current() == '.';
     
         int start = position;
-        int lineCol = column;
-    
+
         while (Character.isDigit(current()) || current() == '.')
             next(1);
     
@@ -244,7 +234,6 @@ public class Lexer {
     private Token getEscapeCodeToken() {
         // Handles escape codes
         int start = position;
-        int lineCol = column;
 
         while (!Character.isWhitespace(current()))
             next(1);
