@@ -176,7 +176,7 @@ public class Lexer {
             value = text.charAt(text.length() / 2);
             return new Token(TokenType.CHARLITERAL, text, value);
         }
-        return new Token(TokenType.ERROR, text, "Invalid CHAR literal.");
+        return new Token(TokenType.ERROR, text, "Lexical Error: Invalid CHAR literal '" + text + "'.");
     }
     private Token getBooleanOrStringLiteralToken() {
         // Handles boolean and string literals
@@ -204,7 +204,7 @@ public class Lexer {
         else if (stringMatcher.matches())
             return new Token(TokenType.STRINGLITERAL, text, text.substring(1, text.length() - 1));
         else {
-            String errorMessage = text.contains("TRUE") || text.contains("FALSE") ? "Invalid BOOL literal" : "Invalid STRING literal";
+            String errorMessage = text.contains("TRUE") || text.contains("FALSE") ? "Lexical Error: Invalid BOOL literal '" + text + "'" : "Lexical Error: Invalid STRING literal '" + text + "'";
             return new Token(TokenType.ERROR, text, errorMessage);
         }
     }
@@ -239,7 +239,7 @@ public class Lexer {
             val = Float.parseFloat(text);
             return new Token(TokenType.FLOATLITERAL, text, val);
         }
-        return new Token(TokenType.ERROR, text, "Invalid Number.");
+        return new Token(TokenType.ERROR, text, "Lexical Error: Invalid number literal '" + text + "'.");
     }
     private Token getEscapeCodeToken() {
         // Handles escape codes
@@ -262,6 +262,6 @@ public class Lexer {
             val = text.charAt(1);
             return new Token(TokenType.ESCAPE, text, val);
         }
-        return new Token(TokenType.ERROR, text, "Invalid '" + text + "' as escape sequence.");
+        return new Token(TokenType.ERROR, text, "Lexical Error: Invalid escape sequence '" + text + "'.");
     }
 }

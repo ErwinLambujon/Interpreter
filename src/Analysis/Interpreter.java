@@ -1,7 +1,4 @@
 package Analysis;
-
-
-
 import Analysis.ParseTree.*;
 import Analysis.ParseTree.Expression.ExpressionNode;
 import Analysis.ParseTree.Expression.BinNode;
@@ -26,12 +23,12 @@ public class Interpreter {
         Parser parser = new Parser(lex);
         Semantic semantic = new Semantic();
 
-
         TokenType tokenType = TokenType.CODE; // Assuming your program starts with CODE token
         program = parser.parseProgram(tokenType);
 
         semantic.analyze(program);
         variableTable = new VariableTable();
+
     }
 
     public void execute(ProgramNode statementBlock) {
@@ -200,23 +197,11 @@ public class Interpreter {
                 binResult = (int) left != (int) right;
                 return binResult;
             case AND:
-                if(left instanceof String){
-                    left = Boolean.parseBoolean((String) left);
-                }
-                if(right instanceof String){
-                    right = Boolean.parseBoolean((String) right);
-                }
                 binResult = (boolean) left && (boolean) right;
-                return ((boolean) binResult) ? "TRUE" : "FALSE";
+                return binResult;
             case OR:
-                if(left instanceof String){
-                    left = Boolean.parseBoolean((String) left);
-                }
-                if(right instanceof String){
-                    right = Boolean.parseBoolean((String) right);
-                }
                 binResult = (boolean) left || (boolean) right;
-                return ((boolean) binResult) ? "TRUE" : "FALSE";
+                return binResult;
             default:
                 throw new RuntimeException("Unknown operator.");
         }

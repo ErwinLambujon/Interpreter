@@ -118,11 +118,9 @@ public class Parser {
             while (matchToken(TokenType.NEWLINE))
                 consumeToken(TokenType.NEWLINE);
         }
-
         // Return the list containing the parsed statements as AST nodes
         return statementList;
     }
-
 
     private StatementNode parseVariableDeclarationStatement() {
         try {
@@ -150,7 +148,7 @@ public class Parser {
             return new VariableDeclarationNode(dataTypeToken, variables);
         } catch (Exception e) {
             // Handle the exception
-            e.printStackTrace(); // Example of printing the stack trace, replace with appropriate handling
+            System.err.println(e.getMessage());// Example of printing the stack trace, replace with appropriate handling
             // You may also return a default value or throw a different exception if needed
             return null; // Or throw new RuntimeException("Error parsing variable declaration", e);
         }
@@ -205,7 +203,7 @@ private StatementNode parseDisplayStatement() throws Exception {
 
             // If newline is next to & throw an error
             if (matchToken(TokenType.NEWLINE))
-                throw new Exception("Unexpected Token Type: " + currentToken.getTokenType());
+                throw new Exception("Syntax Error: Unexpected token type '" + currentToken.getTokenType() + "'.");
 
             // If $ is next to &, create a new Literal Expression with
             // the value \n
@@ -220,7 +218,7 @@ private StatementNode parseDisplayStatement() throws Exception {
 
         // If the token is not newline then throw an error
         if (!matchToken(TokenType.NEWLINE))
-            throw new Exception("Unexpected Token Type: " + currentToken.getTokenType() + " Expected Token: " + TokenType.NEWLINE);
+            throw new Exception("Syntax Error: Unexpected token type '" + currentToken.getTokenType() + "'. Expected token type: '" + TokenType.NEWLINE + "'.");
 
         // Create the Display Statement
         return new DisplayNode(displayToken, expressions);
@@ -238,7 +236,7 @@ private StatementNode parseDisplayStatement() throws Exception {
 
             // If newline is next to & throw an error
             if (matchToken(TokenType.NEWLINE))
-                throw new Exception("Unexpected Token Type: " + currentToken.getTokenType());
+                throw new Exception("Syntax Error: Unexpected token type '" + currentToken.getTokenType() + "'.");
 
             // If $ is next to &, create a new Literal Expression with
             // the value \n
@@ -253,7 +251,7 @@ private StatementNode parseDisplayStatement() throws Exception {
 
         // If the token is not newline then throw an error
         if (!matchToken(TokenType.NEWLINE))
-            throw new Exception("Unexpected Token Type: " + currentToken.getTokenType() + " Expected Token: " + TokenType.NEWLINE);
+            throw new Exception("Syntax Error: Unexpected token type '" + currentToken.getTokenType() + "'. Expected token type: '" + TokenType.NEWLINE + "'.");
 
         // Create the Display Statement
         return new DisplayNode(displayToken, expressions);
@@ -261,9 +259,8 @@ private StatementNode parseDisplayStatement() throws Exception {
     // If display starts with '&'
     // ex. DISPLAY: & ....
     else
-        throw new Exception("Unexpected Token: " + currentToken.getTokenType());
+    throw new Exception("Syntax Error: Unexpected token type '" + currentToken.getTokenType() + "'.");
 }
-
 
     private StatementNode parseScanStatement() throws Exception {
         Token scanToken = currentToken;
@@ -343,7 +340,7 @@ private StatementNode parseDisplayStatement() throws Exception {
             expression = parseBinaryExpression(null);
             return expression;
         } else
-            throw new Exception("Unexpected Token Type: " + currentToken.getTokenType());
+            throw new Exception("Syntax Error: Unexpected token type '" + currentToken.getTokenType() + "'.");
     }
 
     private ExpressionNode parseParenthesisExpression() throws Exception {
@@ -437,7 +434,7 @@ private StatementNode parseDisplayStatement() throws Exception {
             currentToken = lexer.getToken();
             if (matchToken(TokenType.ERROR)) {
                 if (prevToken.getTokenType() == TokenType.INT || prevToken.getTokenType() == TokenType.FLOAT || prevToken.getTokenType() == TokenType.CHAR || prevToken.getTokenType() == TokenType.BOOL) {
-                    if (currentToken.getValue().toString().contains("Invalid keyword") || currentToken.getValue().toString().contains("Invalid data type")) {
+                    if (currentToken.getValue().toString().contains("Invalid keyword") || currentToken.getValue().toString().contains("Invalid Data Type")) {
                         currentToken.setTokenType(TokenType.IDENTIFIER);
                         currentToken.setValue(null);
                     }
@@ -448,7 +445,7 @@ private StatementNode parseDisplayStatement() throws Exception {
                     throw new Exception("" +currentToken.getValue() + "");
             }
         } else
-            throw new Exception("Unexpected Token Type: " + currentToken.getTokenType() + " Expected Token: " + tokenType);
+            throw new Exception("Syntax Error: Unexpected token type '" + currentToken.getTokenType() + "'. Expected token type: '" + tokenType + "'.");
     }
 
     private boolean matchToken(TokenType tokenType) {

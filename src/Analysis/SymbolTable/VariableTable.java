@@ -4,9 +4,6 @@ import Analysis.TokenDataTypes.DataType;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
-
 public class VariableTable {
     /*
         Object ang gigamit diri so that we can do pass
