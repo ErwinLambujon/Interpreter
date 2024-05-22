@@ -47,12 +47,12 @@ public class Grammar {
             if (keywords.containsKey(input))
                 return new Token(keywords.get(input), input, null);
             else
-                throw new Exception(" '" + input + "' is not a valid token for Keyword");
+                throw new Exception(" '" + input + "' is not a valid token for Keyword. Maybe try " + inputToUpperCase);
         } else if (dataTypes.containsKey(inputToUpperCase)) {
             if (dataTypes.containsKey(input))
                 return new Token(dataTypes.get(input), input, null);
             else
-                throw new Exception(" '" + input + "' is not a valid token for Data Type.");
+                throw new Exception(" '" + input + "' is not a valid token for Data Type. Maybe try " + inputToUpperCase);
         } else
             return new Token(TokenType.IDENTIFIER, input, null);
     }

@@ -5,12 +5,12 @@ import Analysis.Interpreter;
 
 public class App {
     public static void main(String[] args) {
-        String codeFilePath = "src/CODE.txt"; // Update this with the path to your text file
-
+        //String codeFilePath = "D:\\BSCS-3\\BSCS3 - SECOND SEMESTER\\CS322 - PROGRAMMING LANGUAGES\\code.txt"; // Update this with the path to your text file
+        String codeFilePath = "src/CODE.txt";
         try {
             // Read the code from the text file
             String code = Files.readString(Paths.get(codeFilePath)).replace("\r", "");
-            System.out.println(code);
+            //System.out.println(code);
 
             // Execute the interpreter
             Interpreter program = new Interpreter(code);
@@ -26,6 +26,7 @@ public class App {
 
             // Print "No error" only if no DISPLAY token is found
         } catch (Exception e) {
+            System.err.println(e);
         }
     }
 }

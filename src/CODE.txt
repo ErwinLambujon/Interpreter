@@ -1,5 +1,0 @@
-BEGIN CODE
-bool c, a
-SCAN: a, c
-DISPLAY: a
-END CODE
