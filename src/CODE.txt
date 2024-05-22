@@ -1,11 +1,5 @@
 BEGIN CODE
-
-
-INT xyz, abc=100
-xyz= ((abc *5)/10 + 110)
-DISPLAY: [[] & xyz & []]
-
-
-
-
+bool c, a
+SCAN: a, c
+DISPLAY: a
 END CODE

@@ -15,11 +15,11 @@ public class Lexer {
 
     private char current() {
         return peek(0);
-    } // Returns the current character
+    }            // Returns the current character
 
     private char lookAhead() {
         return peek(1);
-    } // Returns the next character
+    }          // Returns the next character
 
     private char peek(int offset) {
         int index = position + offset;
@@ -133,9 +133,14 @@ public class Lexer {
         }
         return new Token(TokenType.ENDOFFILE, "\0", null);
     }
-    
+
+
+    // Handles if it is identifiers, keywords and data types
+    // check if the current character is letter or _ or digit then it next position
+    //then gets the text and pass it to the Grammar.getwordToken and returns what token type is that
     private Token getKeywordOrDataTypeOrIdentifierToken() throws Exception {
-        // Handles identifiers, keywords, and data types
+
+
         int start = position;
 
         while (Character.isLetter(current()) || current() == '_' || Character.isDigit(current()))
@@ -146,7 +151,11 @@ public class Lexer {
     
         return Grammar.getWordToken(text);
     }
-    
+
+
+    //gets the character literal like a in 'a'
+    // returns error if the specilized characters is not properly escaped like [] & $ ....
+
     private Token getCharacterLiteralToken() {
         // Handles character literals
         int start = position;
@@ -170,6 +179,9 @@ public class Lexer {
         }
         return new Token(TokenType.ERROR, text, "Lexical Error: Invalid CHAR literal '" + text + "'.");
     }
+
+
+    //matches the BOOL = "TRUE" | a string literal inside ""
     private Token getBooleanOrStringLiteralToken() {
         // Handles boolean and string literals
         int start = position;
@@ -212,8 +224,8 @@ public class Lexer {
         int length = position - start;
         String text = code.substring(start, start + length);
     
-        String floatPattern = "\\d*\\.\\d+";
-        String intPattern = "\\d+";
+        String floatPattern = "\\d*\\.\\d+"; //floating point
+        String intPattern = "\\d+";          //digits
         Pattern floatRegex = Pattern.compile(floatPattern);
         Pattern intRegex = Pattern.compile(intPattern);
     

@@ -5,7 +5,7 @@ import Analysis.Interpreter;
 
 public class App {
     public static void main(String[] args) {
-        String codeFilePath = "D:\\BSCS-3\\BSCS3 - SECOND SEMESTER\\CS322 - PROGRAMMING LANGUAGES\\code.txt"; // Update this with the path to your text file
+        String codeFilePath = "src/CODE.txt"; // Update this with the path to your text file
 
         try {
             // Read the code from the text file

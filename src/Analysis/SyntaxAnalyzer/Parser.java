@@ -22,7 +22,8 @@ public class Parser {
         this.variableNames = new ArrayList<>();
         this.canDeclare = true;
     }
-
+    //parses the statements starting from after the Begin token until the end token
+    //Returns a new ProgramNode containing all parsed statements.
     public ProgramNode parseProgram(TokenType tokenType) throws Exception {
         // Skip any leading newlines to find the start of the program
         while (matchToken(TokenType.NEWLINE))
@@ -61,6 +62,8 @@ public class Parser {
 
 
     // This function parses statements in the code and returns a list representing them as abstract syntax tree (AST) nodes.
+    //parses a series of statements from a sequence of tokens and then -convert to ast nodes. Iterates the token until it founds an end token
+
     private List<StatementNode> parseStatements() throws Exception {
 
         // Create an empty list to store the parsed statements (represented as AST nodes)
@@ -69,16 +72,16 @@ public class Parser {
         // Loop continues as long as the current token is not of type END (indicating the end of the program)
         while (!matchToken(TokenType.END)) {
 
-            // Check for different data type keywords (int, float, char, bool)
             if (matchToken(TokenType.INT) || matchToken(TokenType.FLOAT) ||
-                    matchToken(TokenType.CHAR) || matchToken(TokenType.BOOL)) {
+                    matchToken(TokenType.CHAR) || matchToken(TokenType.BOOL)) {                                                                                                                    // Check for different data type keywords (int, float, char, bool)
+                                                                                                         // Check for different data type keywords (int, float, char, bool)
+
 
                 // If variable declarations are allowed at this point (based on canDeclare flag)
                 if (canDeclare) {
-                    // Parse the variable declaration statement and add it to the list
-                    statementList.add(parseVariableDeclarationStatement());
-                } else {
-                    // Throw an exception if variable declaration is not allowed here based on current token's line and column
+
+                    statementList.add(parseVariableDeclarationStatement());                                      // Parse the variable declaration statement and add it to the list
+                } else {                                                                                        // Throw an exception if variable declaration is not allowed here based on current token's line and column
                     throw new Exception("Invalid syntax.");
                 }
             } else if (matchToken(TokenType.IDENTIFIER)) {
@@ -122,6 +125,7 @@ public class Parser {
         return statementList;
     }
 
+    //
     private StatementNode parseVariableDeclarationStatement() {
         try {
             // Get the data type token and consume it
@@ -428,6 +432,11 @@ private StatementNode parseDisplayStatement() throws Exception {
             return parseExpression();
     }
 
+
+
+
+    //checks if the current tokentype  macthces the expected tokentype, then save the currentToken as a prevToken and then currentToken as the next Token
+    //check if the currentoken is an error and if it is then its possibly a variable name or an Identifier, set currentToken.setValue(null)
     private void consumeToken(TokenType tokenType) throws Exception {
         if (matchToken(tokenType)) {
             Token prevToken = currentToken;
